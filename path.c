@@ -7,7 +7,6 @@
 #include <omp.h>
 #include "mt19937p.h"
 
-int fletcher16(int* data, int count);
 //ldoc on
 /**
  * # The basic recurrence
@@ -41,25 +40,23 @@ int fletcher16(int* data, int count);
  */
 
 int square(int n,               // Number of nodes
-           int* restrict l)  // Partial distance at step s+1
+           int* restrict l,     // Partial distance at step s
+           int* restrict lnew)  // Partial distance at step s+1
 {
     int done = 1;
-    #pragma omp parallel for shared(l) reduction(&& : done)
-    for (int k = 0; k < n; ++k) {
+    #pragma omp parallel for shared(l, lnew) reduction(&& : done)
+    for (int j = 0; j < n; ++j) {
         for (int i = 0; i < n; ++i) {
-            //int lij = l[j*n+i];
-            for (int j = 0; j < n; ++j) {
-                if(l[i*n + j] > (l[n*i + k] + l[n*k + j])){
-                    l[i*n + j] = l[n*i + k] + l[n*k + j];
-                }
-                /*int lik = l[k*n+i];
+            int lij = l[j*n+i];
+            for (int k = 0; k < n; ++k) {
+                int lik = l[k*n+i];
                 int lkj = l[j*n+k];
                 if (lik + lkj < lij) {
                     lij = lik+lkj;
                     done = 0;
-                }*/
+                }
             }
-            //lnew[j*n+i] = lij;
+            lnew[j*n+i] = lij;
         }
     }
     return done;
@@ -116,18 +113,14 @@ void shortest_paths(int n, int* restrict l)
     /*for (int i = 0; i < n*n; i += n+1)
         l[i] = 0;*/
 
-    printf("Fletcher after infinitize: %d\n",fletcher16(l, n*n));
-
     // Repeated squaring until nothing changes
-    //int* restrict lnew = (int*) calloc(n*n, sizeof(int));
-    //memcpy(lnew, l, n*n * sizeof(int));
-    //for (int done = 0; !done; ) {
-    square(n, l);
-    printf("Fletcher after Square: %d\n",fletcher16(l, n*n));
-
-        //memcpy(l, lnew, n*n * sizeof(int));
-    //}
-    //free(lnew);
+    int* restrict lnew = (int*) calloc(n*n, sizeof(int));
+    memcpy(lnew, l, n*n * sizeof(int));
+    for (int done = 0; !done; ) {
+        done = square(n, l, lnew);
+        memcpy(l, lnew, n*n * sizeof(int));
+    }
+    free(lnew);
     deinfinitize(n, l);
 }
 
