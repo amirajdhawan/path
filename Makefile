@@ -10,7 +10,7 @@
 # Or create a Makefile.in.xxx of your own!
 #
 
-iPLATFORM=gcc
+PLATFORM=icc
 include Makefile.in.$(PLATFORM)
 
 .PHONY: exe clean realclean
