@@ -7,6 +7,7 @@
 #include <omp.h>
 #include "mt19937p.h"
 
+int fletcher16(int* data, int count);
 //ldoc on
 /**
  * # The basic recurrence
@@ -122,7 +123,7 @@ void shortest_paths(int n, int* restrict l)
     //memcpy(lnew, l, n*n * sizeof(int));
     //for (int done = 0; !done; ) {
     square(n, l);
-    printf("Fletcher after Square: %d\n",fletcher16(l, n*n))
+    printf("Fletcher after Square: %d\n",fletcher16(l, n*n));
 
         //memcpy(l, lnew, n*n * sizeof(int));
     //}
