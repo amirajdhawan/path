@@ -48,8 +48,8 @@ int square(int n,               // Number of nodes
         for (int i = 0; i < n; ++i) {
             //int lij = l[j*n+i];
             for (int j = 0; j < n; ++j) {
-                if(l[i][j] > (l[i][k] + l[k][j])){
-                    l[i][j] = l[i][k] + l [k][j];
+                if(l[i*n + j] > (l[n*i + k] + l[n*k + j])){
+                    l[i*n + j] = l[i*n + k] + l[n*k + j];
                 }
                 /*int lik = l[k*n+i];
                 int lkj = l[j*n+k];
