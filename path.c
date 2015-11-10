@@ -49,7 +49,7 @@ int square(int n,               // Number of nodes
             //int lij = l[j*n+i];
             for (int j = 0; j < n; ++j) {
                 if(l[i*n + j] > (l[n*i + k] + l[n*k + j])){
-                    l[i*n + j] = l[i*n + k] + l[n*k + j];
+                    l[i*n + j] = l[n*i + k] + l[n*k + j];
                 }
                 /*int lik = l[k*n+i];
                 int lkj = l[j*n+k];
@@ -115,11 +115,15 @@ void shortest_paths(int n, int* restrict l)
     /*for (int i = 0; i < n*n; i += n+1)
         l[i] = 0;*/
 
+    printf("Fletcher after infinitize: %d\n",fletcher16(l, n*n));
+
     // Repeated squaring until nothing changes
     //int* restrict lnew = (int*) calloc(n*n, sizeof(int));
     //memcpy(lnew, l, n*n * sizeof(int));
     //for (int done = 0; !done; ) {
     square(n, l);
+    printf("Fletcher after Square: %d\n",fletcher16(l, n*n))
+
         //memcpy(l, lnew, n*n * sizeof(int));
     //}
     //free(lnew);
